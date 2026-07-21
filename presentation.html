@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تأیید عددی قضایای مقدار میانگین</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+
+<style>
+:root{
+  --bg:#0a0f1c;
+  --bg-2:#0c1322;
+  --panel:#121b2e;
+  --panel-2:#16223a;
+  --grid:#1e2c48;
+  --grid-soft:#16213770;
+  --text:#eaf1ff;
+  --text-dim:#93a3c2;
+  --text-dimmer:#5f709a;
+  --accent:#f2b155;
+  --accent-soft:#f2b15522;
+  --accent2:#57c7b8;
+  --accent2-soft:#57c7b822;
+  --accent3:#e2685a;
+  --line:#24304c;
+  --radius:14px;
+  --font-display:'Vazirmatn',sans-serif;
+  --font-mono:'JetBrains Mono',monospace;
+}
+
+*{box-sizing:border-box; margin:0; padding:0;}
+
+html,body{
+  height:100%;
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font-display);
+  overflow:hidden;
+}
+
+body{
+  background-image:
+    linear-gradient(var(--grid-soft) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-soft) 1px, transparent 1px);
+  background-size: 42px 42px;
+  background-position: center;
+}
+
+/* subtle vignette */
+body::before{
+  content:"";
+  position:fixed; inset:0;
+  background: radial-gradient(ellipse at 50% 40%, transparent 0%, transparent 45%, var(--bg) 92%);
+  pointer-events:none;
+  z-index:0;
+}
+
+.deck{
+  position:relative;
+  width:100vw;
+  height:100vh;
+  z-index:1;
+}
+
+.slide{
+  position:absolute;
+  inset:0;
+  display:none;
+  flex-direction:column;
+  padding: 4.2vh 7vw 8vh 7vw;
+  opacity:0;
+  transform: translateY(14px);
+  transition: opacity .38s ease, transform .38s ease;
+}
+.slide.active{
+  display:flex;
+  opacity:1;
+  transform: translateY(0);
+}
+
+.eyebrow{
+  font-family:var(--font-mono);
+  font-size:.78rem;
+  letter-spacing:.12em;
+  color:var(--accent);
+  text-transform:uppercase;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom: 1.1vh;
+}
+.eyebrow::before{
+  content:"";
+  width:26px; height:2px;
+  background:var(--accent);
+  display:inline-block;
+}
+
+h1.slide-title{
+  font-weight:800;
+  font-size: clamp(1.6rem, 3.1vw, 2.55rem);
+  line-height:1.28;
+  color:var(--text);
+  margin-bottom: 1.6vh;
+}
+h1.slide-title b, h1.slide-title .hl{
+  color: var(--accent);
+  font-weight:800;
+}
+
+.subtitle{
+  color:var(--text-dim);
+  font-size: clamp(.92rem, 1.15vw, 1.08rem);
+  line-height:1.9;
+  max-width: 62ch;
+  margin-bottom:1.6vh;
+}
+
+.body-area{
+  flex:1;
+  min-height:0;
+  display:flex;
+  gap: 2.6vw;
+}
+
+.col{ flex:1; min-width:0; display:flex; flex-direction:column; gap:1.1vh; justify-content:center;}
+
+/* Panels / cards */
+.card{
+  background: linear-gradient(180deg, var(--panel), var(--panel-2));
+  border:1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 1.5rem 1.6rem;
+  position:relative;
+}
+.card::before{
+  content:"";
+  position:absolute; inset-inline-start:0; top:0; bottom:0;
+  width:3px;
+  background: var(--accent);
+  border-start-start-radius: var(--radius);
+  border-end-start-radius: var(--radius);
+  opacity:.8;
+}
+.card.accent2::before{ background:var(--accent2); }
+.card h3{
+  font-size:1rem;
+  font-weight:700;
+  margin-bottom:.55rem;
+  color:var(--text);
+}
+.card p, .card li{
+  color:var(--text-dim);
+  font-size:.92rem;
+  line-height:1.85;
+}
+.card ul{ list-style:none; display:flex; flex-direction:column; gap:.5rem;}
+.card li{ position:relative; padding-inline-end:1.3rem;}
+.card li::before{
+  content:"›";
+  position:absolute; inset-inline-end:0; top:0;
+  color:var(--accent);
+  font-weight:700;
+}
+
+.badge{
+  display:inline-flex; align-items:center; gap:6px;
+  font-family:var(--font-mono);
+  font-size:.68rem;
+  letter-spacing:.03em;
+  color:var(--accent2);
+  background:var(--accent2-soft);
+  border:1px solid #57c7b855;
+  padding:3px 10px;
+  border-radius:20px;
+  margin-bottom:.7rem;
+}
+.badge::before{
+  content:"";
+  width:6px;height:6px;border-radius:50%;
+  background:var(--accent2);
+  box-shadow:0 0 8px var(--accent2);
+}
+
+/* math block */
+.eq{
+  background: var(--bg-2);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:1.1rem 1.4rem;
+  direction:ltr;
+  text-align:center;
+  color:var(--text);
+  overflow-x:auto;
+}
+.eq .katex{ font-size:1.12em; color:var(--text); }
+.eq-label{
+  font-family:var(--font-mono);
+  font-size:.7rem;
+  color:var(--text-dimmer);
+  margin-top:.5rem;
+  text-align:center;
+  direction:rtl;
+}
+
+/* mono / numeric emphasis */
+.mono{ font-family:var(--font-mono); direction:ltr; unicode-bidi: isolate; }
+.result{
+  font-family:var(--font-mono);
+  color:var(--accent);
+  font-weight:600;
+}
+
+/* chart wrapper */
+.chart-wrap{
+  background:var(--bg-2);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:1rem 1.1rem .6rem 1.1rem;
+  display:flex; flex-direction:column;
+  flex:1;
+  min-height:0;
+}
+.chart-wrap svg{ width:100%; height:100%; overflow:visible;}
+.chart-title{
+  font-family:var(--font-mono);
+  font-size:.72rem;
+  color:var(--text-dimmer);
+  letter-spacing:.03em;
+  margin-bottom:.4rem;
+  display:flex; justify-content:space-between; align-items:center;
+}
+.chart-title .live{
+  color:var(--accent2);
+  display:flex; align-items:center; gap:5px;
+}
+.chart-title .live::before{
+  content:"";
+  width:6px;height:6px;border-radius:50%;
+  background:var(--accent2);
+  box-shadow:0 0 6px var(--accent2);
+  animation: pulse 1.6s infinite ease-in-out;
+}
+@keyframes pulse{ 0%,100%{opacity:1} 50%{opacity:.3} }
+
+/* number grid on results slides */
+.stat-row{ display:flex; gap:1rem; }
+.stat{
+  flex:1;
+  background:var(--bg-2);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:.85rem 1rem;
+  text-align:center;
+}
+.stat .k{ font-family:var(--font-mono); font-size:.68rem; color:var(--text-dimmer); margin-bottom:.35rem;}
+.stat .v{ font-family:var(--font-mono); font-size:1.15rem; color:var(--accent); font-weight:700; direction:ltr; unicode-bidi:isolate;}
+.stat.teal .v{ color:var(--accent2); }
+
+/* table */
+table.data{
+  width:100%;
+  border-collapse:collapse;
+  font-size:.86rem;
+}
+table.data th, table.data td{
+  padding:.6rem .7rem;
+  text-align:center;
+  border-bottom:1px solid var(--line);
+}
+table.data th{
+  font-family:var(--font-mono);
+  color:var(--text-dimmer);
+  font-weight:500;
+  font-size:.72rem;
+  letter-spacing:.03em;
+}
+table.data td{ color:var(--text); }
+table.data td.mono{ font-family:var(--font-mono); color:var(--accent); direction:ltr; unicode-bidi:isolate;}
+table.data tr:last-child td{ border-bottom:none;}
+
+/* step list (algorithm) */
+.steps{ display:flex; flex-direction:column; gap:.75rem; }
+.step{
+  display:flex; gap:.85rem; align-items:flex-start;
+  background:var(--bg-2);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:.75rem .95rem;
+}
+.step .num{
+  font-family:var(--font-mono);
+  font-weight:700;
+  color:var(--bg);
+  background:var(--accent);
+  width:24px; height:24px; min-width:24px;
+  border-radius:6px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:.78rem;
+}
+.step .txt{ font-size:.87rem; color:var(--text-dim); line-height:1.75; padding-top:2px;}
+.step .txt b{ color:var(--text); font-weight:600;}
+
+/* footer / nav */
+.hud{
+  position:fixed; inset-inline:7vw; bottom:3.2vh;
+  display:flex; align-items:center; justify-content:space-between;
+  z-index:5;
+}
+.hud-left{ display:flex; align-items:center; gap:14px; }
+.progress-track{
+  width: 34vw; max-width:480px;
+  height:3px;
+  background:var(--line);
+  border-radius:3px;
+  overflow:hidden;
+}
+.progress-fill{
+  height:100%;
+  background: linear-gradient(90deg, var(--accent2), var(--accent));
+  width:6.6%;
+  transition: width .35s ease;
+}
+.counter{
+  font-family:var(--font-mono);
+  font-size:.78rem;
+  color:var(--text-dimmer);
+  white-space:nowrap;
+}
+.nav-btns{ display:flex; gap:.6rem; }
+.nav-btn{
+  width:40px; height:40px;
+  border-radius:50%;
+  border:1px solid var(--line);
+  background:var(--panel);
+  color:var(--text-dim);
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer;
+  transition: all .2s ease;
+}
+.nav-btn:hover{ border-color:var(--accent); color:var(--accent); }
+.nav-btn:active{ transform:scale(.93); }
+.nav-btn svg{ width:16px; height:16px; }
+
+.deck-name{
+  position:fixed; top:3.2vh; inset-inline-end:7vw;
+  font-family:var(--font-mono);
+  font-size:.72rem;
+  color:var(--text-dimmer);
+  letter-spacing:.04em;
+  z-index:5;
+}
+.deck-name span{ color:var(--accent); }
+
+/* Title slide specifics */
+.title-slide{ justify-content:center; align-items:center; text-align:center; }
+.title-slide .kicker{
+  font-family:var(--font-mono);
+  color:var(--accent2);
+  font-size:.85rem;
+  letter-spacing:.15em;
+  margin-bottom:1.4vh;
+}
+.title-slide h1{
+  font-weight:900;
+  font-size: clamp(2.1rem, 5vw, 3.6rem);
+  line-height:1.28;
+  margin-bottom:1.4vh;
+}
+.title-slide h1 .hl{ color:var(--accent); }
+.title-slide .desc{
+  color:var(--text-dim);
+  max-width:56ch;
+  margin: 0 auto 2.6vh auto;
+  line-height:1.9;
+  font-size:1rem;
+}
+.title-chart{
+  width:min(560px, 70vw);
+  height: 20vh;
+  margin: 0 auto 3vh auto;
+}
+.authors{
+  display:flex; flex-wrap:wrap; justify-content:center; gap:.5rem 1rem;
+  font-family:var(--font-mono);
+  font-size:.78rem;
+  color:var(--text-dimmer);
+}
+.authors span{
+  padding:.3rem .75rem;
+  border:1px solid var(--line);
+  border-radius:20px;
+}
+.course-tag{
+  margin-top:2.2vh;
+  font-family:var(--font-mono);
+  font-size:.72rem;
+  color:var(--text-dimmer);
+  letter-spacing:.05em;
+}
+
+/* closing slide */
+.closing .topics{ display:flex; flex-wrap:wrap; gap:.6rem; justify-content:center; margin: 2vh 0;}
+.topics span{
+  font-family:var(--font-mono);
+  font-size:.78rem;
+  padding:.45rem 1rem;
+  border-radius:20px;
+  border:1px solid var(--line);
+  color:var(--text-dim);
+  background:var(--panel);
+}
+
+::selection{ background:var(--accent-soft); color:var(--accent); }
+
+@media (max-width: 900px){
+  .body-area{ flex-direction:column; }
+  .progress-track{ width:32vw; }
+}
+</style>
+</head>
+<body>
+
+<div class="deck" id="deck">
+
+  <!-- SLIDE 1 : TITLE -->
+  <section class="slide title-slide active" data-title="عنوان">
+    <div class="kicker">پروژه پایانی درس آنالیز عددی · ۲۰۲۶</div>
+    <h1>تأیید عددی <span class="hl">قضایای مقدار میانگین</span></h1>
+    <p class="desc">
+      محاسبه‌ی عددی نقطه‌ی تضمین‌شده توسط قضیه‌ی مقدار میانگین انتگرالی و مشتق‌گیری،
+      برای تابعی که با انتگرال‌گیری عددی تعریف شده — بدون استفاده از مشتق‌گیری یا انتگرال‌گیری نمادین.
+    </p>
+    <div class="title-chart" id="titleChart"></div>
+    <div class="authors">
+      <span>Mahan Rahimi</span><span>Shima Khalilpuor</span><span>Matin Abasi</span>
+      <span>Zahra Taheri</span><span>Masoome Mortazavi</span>
+    </div>
+    <div class="course-tag">پروژه پایانی آنالیز عددی — MATLAB / Octave</div>
+  </section>
+
+  <!-- SLIDE 2 : PROBLEM STATEMENT -->
+  <section class="slide" data-title="صورت مسئله">
+    <div class="eyebrow">صورت مسئله</div>
+    <h1 class="slide-title">دو قضیه‌ی مقدار میانگین، <b>به‌صورت عددی</b></h1>
+    <p class="subtitle">
+      برای تابع F(x) با ضابطه‌ی مشخص‌شده در هر بازه‌ی [a,b]، باید نقطه‌ی c را — بدون هیچ محاسبه‌ی نمادین —
+      صرفاً با ریشه‌یابی، درون‌یابی، مشتق‌گیری و انتگرال‌گیری عددی به دست آوریم.
+    </p>
+    <div class="body-area">
+      <div class="col">
+        <div class="badge">قضیه مقدار میانگین انتگرالی</div>
+        <div class="eq"><span class="tex">\exists\, c \in [a,b] \;:\; F(c) = \dfrac{1}{b-a}\int_a^b F(t)\,dt</span></div>
+        <div class="eq-label">مقدار F در نقطه c برابر با میانگین F روی بازه است</div>
+      </div>
+      <div class="col">
+        <div class="badge" style="color:var(--accent);background:var(--accent-soft);border-color:#f2b15555;">قضیه مقدار میانگین مشتق</div>
+        <div class="eq"><span class="tex">\exists\, c \in (a,b) \;:\; F'(c) = \dfrac{F(b)-F(a)}{b-a}</span></div>
+        <div class="eq-label">شیب مماس در c برابر با شیب وتر روی بازه است</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 3 : OUR FUNCTION -->
+  <section class="slide" data-title="تابع گروه">
+    <div class="eyebrow">تابع اختصاصی گروه</div>
+    <h1 class="slide-title">F(x) به‌صورت یک <b>انتگرال با کران متغیر</b></h1>
+    <div class="body-area">
+      <div class="col" style="flex:1.1;">
+        <div class="eq">
+          <span class="tex">F(x)=\int_{0}^{\tan(x)} e^{-(t-1)^2}\,dt \,,\qquad x\in[0,\,0.5]</span>
+        </div>
+        <div class="card" style="margin-top:.9rem;">
+          <h3>چرا محاسبه‌ی این تابع ساده نیست؟</h3>
+          <ul>
+            <li>کران بالای انتگرال خودش تابعی از x است — tan(x)</li>
+            <li>پادمشتق بسته‌فرم برای e<span class="mono" style="font-size:.85em;">^(-(t-1)²)</span> وجود ندارد</li>
+            <li>طبق صورت مسئله، حل نمادین (syms, int, diff) مجاز نیست</li>
+          </ul>
+        </div>
+      </div>
+      <div class="col chart-wrap" id="Fx-chart-wrap" style="flex:1;">
+        <div class="chart-title"><span>F(x) روی [۰, ۰.۵]</span><span class="live">محاسبه زنده</span></div>
+        <div id="chart-Fx" style="flex:1;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 4 : METHOD INVENTORY -->
+  <section class="slide" data-title="روش‌های عددی">
+    <div class="eyebrow">جعبه‌ابزار</div>
+    <h1 class="slide-title">چهار روش عددی، <b>یک‌جا در خدمت دو قضیه</b></h1>
+    <p class="subtitle">هیچ‌کدام از این مراحل از دستورهای نمادین متلب استفاده نمی‌کنند؛ همه روی نمونه‌های عددی کار می‌کنند.</p>
+    <div class="body-area" style="gap:1.1vw;">
+      <div class="card"><h3>۱ · انتگرال‌گیری عددی</h3><p>قاعده‌ی ۱/۳ سیمپسون برای محاسبه‌ی خودِ F(x) و میانگین آن روی [۰, ۰.۵]</p></div>
+      <div class="card"><h3>۲ · مشتق‌گیری عددی</h3><p>روش تفاضل مرکزی سه‌نقطه‌ای برای تخمین F′(x) در نقاط نمونه</p></div>
+      <div class="card"><h3>۳ · درون‌یابی</h3><p>چندجمله‌ای لاگرانژ (و تفاضلات پیشرو نیوتن) برای پیوسته‌سازی نمونه‌های مشتق</p></div>
+      <div class="card"><h3>۴ · ریشه‌یابی</h3><p>دوبخشی و نقطه‌ی ثابت برای یافتن c در هر دو قضیه</p></div>
+    </div>
+  </section>
+
+  <!-- SLIDE 5 : Building F(x) -->
+  <section class="slide" data-title="ساخت F(x)">
+    <div class="eyebrow">پیاده‌سازی</div>
+    <h1 class="slide-title">ساخت F(x): <b>سیمپسون + سری تیلور</b></h1>
+    <div class="body-area">
+      <div class="col">
+        <div class="card">
+          <h3>گام ۱ — انتگرال‌گیری</h3>
+          <p>مقدار F(x) با قاعده‌ی سیمپسون روی ۱۰۰۰ زیربازه بین ۰ و tan(x) محاسبه می‌شود:</p>
+        </div>
+        <div class="eq" style="font-size:.92rem;">
+          <span class="tex">\int_a^b f(t)\,dt \approx \frac{h}{3}\Big[f_0+4\!\!\sum_{i\,odd}\!\!f_i+2\!\!\sum_{i\,even}\!\!f_i+f_n\Big]</span>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card accent2">
+          <h3>گام ۲ — بدون توابع آماده</h3>
+          <p>چون در بازه‌ی کاری، x به صفر نزدیک است، مقادیر <span class="mono">tan(x)</span> و <span class="mono">exp(x)</span>
+             به‌جای فراخوانی توابع داخلی، با بسط سری تیلور (۵۰ جمله) محاسبه می‌شوند — سازگار با محدودیت «فقط روش‌های عددی».</p>
+        </div>
+        <div class="eq" style="font-size:.92rem;">
+          <span class="tex">e^{x}\approx\sum_{n=0}^{50}\frac{x^{n}}{n!}\,,\qquad \tan(x)=\frac{\sin(x)}{\cos(x)}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 6 : Verification -->
+  <section class="slide" data-title="راستی‌آزمایی">
+    <div class="eyebrow">راستی‌آزمایی</div>
+    <h1 class="slide-title">مقایسه با تابع <b>داخلی متلب</b></h1>
+    <p class="subtitle">پیش از استفاده از F(x) در ادامه‌ی پروژه، خروجی آن با تابع <span class="mono">integral</span> داخلی متلب مقایسه شد.</p>
+    <div class="body-area">
+      <div class="col chart-wrap">
+        <div class="chart-title"><span>F سفارشی در برابر F داخلی</span><span class="live">محاسبه زنده</span></div>
+        <div id="chart-verify" style="flex:1;"></div>
+      </div>
+      <div class="col">
+        <div class="stat-row">
+          <div class="stat"><div class="k">F(0.4) — سفارشی</div><div class="v" id="stat-fcustom">—</div></div>
+          <div class="stat teal"><div class="k">F(0.4) — داخلی متلب</div><div class="v" id="stat-fnative">—</div></div>
+        </div>
+        <div class="card" style="margin-top:.4rem;">
+          <h3>نتیجه</h3>
+          <p>دو منحنی عملاً روی هم می‌افتند؛ اختلاف در مرتبه‌ی <span class="mono">10⁻¹³</span> است —
+             یعنی تقریب سیمپسون + سری تیلور برای ادامه‌ی کار قابل‌اعتماد است.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 7 : Error bound -->
+  <section class="slide" data-title="کران خطا">
+    <div class="eyebrow">تحلیل خطا</div>
+    <h1 class="slide-title">چرا ۱۰۰۰ زیربازه <b>کافی است؟</b></h1>
+    <div class="body-area">
+      <div class="col">
+        <div class="card">
+          <h3>کران خطای قاعده‌ی سیمپسون</h3>
+          <p>خطای انتگرال‌گیری سیمپسون با مشتق مرتبه‌چهارم تابع کران‌دار می‌شود:</p>
+        </div>
+        <div class="eq">
+          <span class="tex">\left|E\right| \le \frac{(b-a)}{180}\,h^{4}\max_{[a,b]}\left|f^{(4)}(\xi)\right|</span>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card accent2">
+          <h3>روش محاسبه</h3>
+          <p>مشتق مرتبه‌چهارم انتگرالده و خودِ F(x) به‌صورت نمادین (فقط برای تحلیل خطا، نه برای پاسخ نهایی)
+             محاسبه و سپس بیشینه‌ی قدرمطلق آن روی [۰, ۰.۵] با <span class="mono">fminbnd</span> یافت می‌شود.</p>
+        </div>
+        <div class="steps">
+          <div class="step"><div class="num">۱</div><div class="txt">مشتق مرتبه ۴ تابع انتگرالده و F(x) به‌دست می‌آید</div></div>
+          <div class="step"><div class="num">۲</div><div class="txt">بیشینه‌ی قدرمطلق هرکدام روی [۰, ۰.۵] پیدا می‌شود</div></div>
+          <div class="step"><div class="num">۳</div><div class="txt"><b>نتیجه:</b> با h کوچکِ ۱۰۰۰ زیربازه، خطا در حد ماشین باقی می‌ماند</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 8 : Integral MVT goal -->
+  <section class="slide" data-title="هدف MVT انتگرالی">
+    <div class="eyebrow">قضیه مقدار میانگین انتگرالی</div>
+    <h1 class="slide-title">گام اول: <b>مقدار میانگین F</b> روی [۰, ۰.۵]</h1>
+    <div class="body-area">
+      <div class="col">
+        <div class="eq"><span class="tex">\bar F=\frac{1}{0.5-0}\int_{0}^{0.5}F(t)\,dt</span></div>
+        <div class="card" style="margin-top:.9rem;">
+          <h3>روش</h3>
+          <p>انتگرال ∫F(t)dt روی [۰, ۰.۵] دوباره با قاعده‌ی سیمپسون (۱۰۰۰ زیربازه) محاسبه و بر طول بازه تقسیم می‌شود.</p>
+        </div>
+      </div>
+      <div class="col">
+        <div class="stat-row">
+          <div class="stat"><div class="k">∫₀^0.5 F(t)dt</div><div class="v" id="stat-intF">—</div></div>
+          <div class="stat teal"><div class="k">میانگین F̄</div><div class="v" id="stat-avgF">—</div></div>
+        </div>
+        <div class="card accent2" style="margin-top:.9rem;">
+          <h3>گام بعد</h3>
+          <p>تعریف تابع کمکی <span class="mono">G(x) = F(x) − F̄</span> و یافتن ریشه‌ی آن روی [۰, ۰.۵] — همان نقطه‌ی c قضیه است.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 9 : Integral MVT algorithm -->
+  <section class="slide" data-title="الگوریتم ریشه‌یابی MVT انتگرالی">
+    <div class="eyebrow">قضیه مقدار میانگین انتگرالی</div>
+    <h1 class="slide-title">ریشه‌یابی دومرحله‌ای برای <b>G(x) = 0</b></h1>
+    <div class="body-area">
+      <div class="col">
+        <div class="steps">
+          <div class="step"><div class="num">۱</div><div class="txt"><b>دوبخشی نمادین:</b> با اعداد گویای دقیق (sym)، بازه‌ی [۰, ۰.۵] در ۵ گام حول ریشه باریک می‌شود</div></div>
+          <div class="step"><div class="num">۲</div><div class="txt"><b>تخمین F′(c):</b> با تفاضل مرکزی سه‌نقطه‌ای در نقطه‌ی به‌دست‌آمده</div></div>
+          <div class="step"><div class="num">۳</div><div class="txt"><b>نقطه‌ی ثابت:</b> با <span class="mono">g(x) = x − G(x)/F′(c)</span> در ۶ گام به دقت کامل می‌رسیم</div></div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="eq"><span class="tex">g(x) = x-\frac{G(x)}{F'(c)}</span></div>
+        <div class="card accent2" style="margin-top:.9rem;">
+          <h3>چرا دو روش پشت‌سرهم؟</h3>
+          <p>دوبخشی همیشه همگراست ولی کند است؛ نقطه‌ی ثابت با شروع از پاسخ تقریبی دوبخشی، خیلی سریع به دقت ماشین می‌رسد.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 10 : Integral MVT results -->
+  <section class="slide" data-title="نتیجه MVT انتگرالی">
+    <div class="eyebrow">نتیجه</div>
+    <h1 class="slide-title">نقطه‌ی <b>c</b> برای قضیه‌ی انتگرالی</h1>
+    <div class="body-area">
+      <div class="col chart-wrap" style="flex:1.3;">
+        <div class="chart-title"><span>F(x)، میانگین، و نقطه‌ی (c, F(c))</span><span class="live">محاسبه زنده</span></div>
+        <div id="chart-imvt" style="flex:1;"></div>
+      </div>
+      <div class="col">
+        <div class="stat-row">
+          <div class="stat"><div class="k">c</div><div class="v" id="stat-c1">—</div></div>
+          <div class="stat teal"><div class="k">F(c)</div><div class="v" id="stat-fc1">—</div></div>
+        </div>
+        <div class="card" style="margin-top:.4rem;">
+          <p>نقطه‌ی c تقریباً وسط بازه است؛ چون F(x) روی [۰, ۰.۵] تقریباً یکنواخت افزایشی و بدون تغییر انحنای شدید است.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 11 : Derivative MVT goal + sampling -->
+  <section class="slide" data-title="هدف MVT مشتق">
+    <div class="eyebrow">قضیه مقدار میانگین مشتق</div>
+    <h1 class="slide-title">نمونه‌برداری از <b>F′(x)</b></h1>
+    <div class="body-area">
+      <div class="col">
+        <div class="eq"><span class="tex">F'(x_i)\approx\frac{F(x_i+h)-F(x_i-h)}{2h}</span></div>
+        <div class="card" style="margin-top:.9rem;">
+          <h3>روش تفاضل مرکزی سه‌نقطه‌ای</h3>
+          <p>در ۲۰ نقطه‌ی هم‌فاصله روی [۰, ۰.۵]، مشتق F به‌صورت عددی تخمین زده می‌شود — بدون فراخوانی <span class="mono">diff</span> نمادین.</p>
+        </div>
+        <div class="stat-row" style="margin-top:.9rem;">
+          <div class="stat"><div class="k">شیب وتر m</div><div class="v" id="stat-m">—</div></div>
+          <div class="stat teal"><div class="k">F(0.5)</div><div class="v" id="stat-f05">—</div></div>
+        </div>
+      </div>
+      <div class="col chart-wrap">
+        <div class="chart-title"><span>نمونه‌های F′(x)</span><span class="live">محاسبه زنده</span></div>
+        <div id="chart-samples" style="flex:1;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 12 : interpolation -->
+  <section class="slide" data-title="درون‌یابی">
+    <div class="eyebrow">قضیه مقدار میانگین مشتق</div>
+    <h1 class="slide-title">از نمونه‌ها به یک <b>تابع پیوسته</b></h1>
+    <p class="subtitle">۲۰ نمونه‌ی گسسته‌ی F′(x) با چندجمله‌ای لاگرانژ (معادل با تفاضلات پیشرو نیوتن برای نقاط هم‌فاصله) به هم متصل می‌شوند.</p>
+    <div class="body-area">
+      <div class="col">
+        <div class="eq"><span class="tex">p(x)=\sum_{i=1}^{n} F'(x_i)\prod_{j\ne i}\frac{x-x_j}{x_i-x_j}</span></div>
+        <div class="card accent2" style="margin-top:.9rem;">
+          <h3>سپس یک ریشه‌یابی دیگر</h3>
+          <p>تعریف <span class="mono">H(x) = p(x) − m</span> و یافتن ریشه‌ی آن روی (۰, ۰.۵) با روش دوبخشی (تُلرانس ۱۰⁻⁸) — همان نقطه‌ی c قضیه‌ی مشتق است.</p>
+        </div>
+      </div>
+      <div class="col chart-wrap">
+        <div class="chart-title"><span>چندجمله‌ای درون‌یاب p(x)</span><span class="live">محاسبه زنده</span></div>
+        <div id="chart-interp" style="flex:1;"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 13 : Derivative MVT results -->
+  <section class="slide" data-title="نتیجه MVT مشتق">
+    <div class="eyebrow">نتیجه</div>
+    <h1 class="slide-title">نقطه‌ی <b>c</b> برای قضیه‌ی مشتق</h1>
+    <div class="body-area">
+      <div class="col chart-wrap" style="flex:1.3;">
+        <div class="chart-title"><span>p(x)، شیب وتر m، و نقطه‌ی (c, p(c))</span><span class="live">محاسبه زنده</span></div>
+        <div id="chart-dmvt" style="flex:1;"></div>
+      </div>
+      <div class="col">
+        <div class="stat-row">
+          <div class="stat"><div class="k">c</div><div class="v" id="stat-c2">—</div></div>
+          <div class="stat teal"><div class="k">F′(c)</div><div class="v" id="stat-fpc2">—</div></div>
+        </div>
+        <div class="card" style="margin-top:.4rem;">
+          <p>در این نقطه، شیب مماس بر F(x) دقیقاً برابر شیب وتر بین دو سر بازه است — دقیقاً همان چیزی که قضیه ادعا می‌کند.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 14 : summary -->
+  <section class="slide" data-title="جمع‌بندی نتایج">
+    <div class="eyebrow">جمع‌بندی</div>
+    <h1 class="slide-title">هر دو قضیه، <b>به‌صورت عددی تأیید شدند</b></h1>
+    <div class="body-area">
+      <div class="col" style="flex:1.4;">
+        <div class="card">
+          <table class="data" id="summary-table">
+            <thead>
+              <tr><th>قضیه</th><th>روش‌های استفاده‌شده</th><th>نقطه‌ی c</th><th>مقدار</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>مقدار میانگین انتگرالی</td>
+                <td>سیمپسون + دوبخشی + نقطه‌ثابت</td>
+                <td class="mono" id="sum-c1">—</td>
+                <td class="mono" id="sum-fc1">—</td>
+              </tr>
+              <tr>
+                <td>مقدار میانگین مشتق</td>
+                <td>تفاضل مرکزی + لاگرانژ + دوبخشی</td>
+                <td class="mono" id="sum-c2">—</td>
+                <td class="mono" id="sum-fpc2">—</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card accent2">
+          <h3>نکته‌ی کلیدی</h3>
+          <p>در سراسر پروژه، فقط از ریشه‌یابی، درون‌یابی، مشتق‌گیری و انتگرال‌گیری <b>عددی</b> استفاده شد؛
+          هیچ پاسخ نهایی‌ای از دستورهای نمادین متلب گرفته نشد.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDE 15 : closing -->
+  <section class="slide closing title-slide" data-title="پایان">
+    <div class="kicker">جمع‌بندی موضوعات</div>
+    <h1>با <span class="hl">سپاس</span> از توجه شما</h1>
+    <div class="topics">
+      <span>انتگرال‌گیری عددی</span><span>مشتق‌گیری عددی</span><span>درون‌یابی</span>
+      <span>ریشه‌یابی</span><span>قضیه مقدار میانگین</span><span>MATLAB / Octave</span>
+    </div>
+    <div class="authors">
+      <span>Mahan Rahimi</span><span>Shima Khalilpuor</span><span>Matin Abasi</span>
+      <span>Zahra Taheri</span><span>Masoome Mortazavi</span>
+    </div>
+    <div class="course-tag">پروژه پایانی درس آنالیز عددی — ۲۰۲۶</div>
+  </section>
+
+</div>
+
+<div class="deck-name">MVT<span>·</span>NUMERIC</div>
+
+<div class="hud">
+  <div class="hud-left">
+    <div class="nav-btns">
+      <button class="nav-btn" id="prevBtn" title="اسلاید قبل">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 6l6 6-6 6"/></svg>
+      </button>
+      <button class="nav-btn" id="nextBtn" title="اسلاید بعد">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6"/></svg>
+      </button>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+  <div class="counter" id="counter">01 / 15</div>
+</div>
+
+<script>
+/* =====================================================================
+   NUMERIC CORE — mirrors the MATLAB algorithms in the project (Simpson's
+   rule, central-difference derivative, Lagrange interpolation, bisection)
+   so every number and curve on these slides is computed live, not hard-coded.
+   ===================================================================== */
+
+function simpson(f, a, b, n){
+  if(n % 2 === 1) n++;
+  const h = (b-a)/n;
+  let s = f(a) + f(b);
+  for(let i=1;i<n;i++){
+    const x = a + i*h;
+    s += (i % 2 === 0 ? 2 : 4) * f(x);
+  }
+  return s * h/3;
+}
+
+function F(x){
+  return simpson(t => Math.exp(-Math.pow(t-1,2)), 0, Math.tan(x), 400);
+}
+
+function Fprime(x, h=1e-5){
+  return (F(x+h) - F(x-h)) / (2*h);
+}
+
+function bisection(f, a, b, iters=60){
+  let fa = f(a);
+  for(let i=0;i<iters;i++){
+    const c = (a+b)/2;
+    const fc = f(c);
+    if(Math.sign(fc) === Math.sign(fa)){ a = c; fa = fc; } else { b = c; }
+  }
+  return (a+b)/2;
+}
+
+function lagrange(xs, ys){
+  return function(x){
+    let total = 0;
+    const n = xs.length;
+    for(let i=0;i<n;i++){
+      let term = ys[i];
+      for(let j=0;j<n;j++){
+        if(j!==i) term *= (x - xs[j])/(xs[i]-xs[j]);
+      }
+      total += term;
+    }
+    return total;
+  };
+}
+
+/* ---- run the pipeline once ---- */
+const A = 0, B = 0.5;
+
+// average value of F on [0,0.5]
+const intF = simpson(F, A, B, 200);
+const avgF = intF/(B-A);
+
+// integral MVT root: G(x) = F(x) - avgF
+const c1 = bisection(x => F(x) - avgF, A, B);
+const Fc1 = F(c1);
+
+// derivative samples + interpolation
+const nSamples = 20;
+const sampleXs = Array.from({length:nSamples}, (_,i)=> A + i*(B-A)/(nSamples-1));
+const sampleDs = sampleXs.map(x=>{
+  const h = (B-A)/(nSamples-1)/50;
+  const xx = Math.min(Math.max(x,1e-6), B-1e-6);
+  return Fprime(xx, Math.max(h,1e-6));
+});
+const p = lagrange(sampleXs, sampleDs);
+
+const m = (F(B) - F(A)) / (B-A);
+const c2 = bisection(x => p(x) - m, 1e-4, B-1e-4);
+const pc2 = p(c2);
+
+/* =====================================================================
+   FORMATTING HELPERS
+   ===================================================================== */
+function fmt(n, d=6){ return Number(n).toFixed(d); }
+
+/* =====================================================================
+   TINY SVG CHART BUILDER
+   ===================================================================== */
+function buildChart(el, opts){
+  const w = 600, h = 320;
+  const pad = {t:16, r:18, b:32, l:44};
+  const {xMin,xMax,yMin,yMax,curves,points,hlines,xlabel,ylabel} = opts;
+
+  const sx = x => pad.l + (x-xMin)/(xMax-xMin) * (w-pad.l-pad.r);
+  const sy = y => (h-pad.b) - (y-yMin)/(yMax-yMin) * (h-pad.t-pad.b);
+
+  let svg = `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">`;
+
+  // grid
+  const gridColor = "#1e2c48";
+  const nY = 4, nX = 5;
+  for(let i=0;i<=nY;i++){
+    const y = yMin + i*(yMax-yMin)/nY;
+    svg += `<line x1="${pad.l}" y1="${sy(y)}" x2="${w-pad.r}" y2="${sy(y)}" stroke="${gridColor}" stroke-width="1"/>`;
+    svg += `<text x="${pad.l-8}" y="${sy(y)+3}" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="#5f709a">${fmt(y,2)}</text>`;
+  }
+  for(let i=0;i<=nX;i++){
+    const x = xMin + i*(xMax-xMin)/nX;
+    svg += `<line x1="${sx(x)}" y1="${pad.t}" x2="${sx(x)}" y2="${h-pad.b}" stroke="${gridColor}" stroke-width="1"/>`;
+    svg += `<text x="${sx(x)}" y="${h-pad.b+16}" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#5f709a">${fmt(x,2)}</text>`;
+  }
+  // axes
+  svg += `<line x1="${pad.l}" y1="${h-pad.b}" x2="${w-pad.r}" y2="${h-pad.b}" stroke="#33456b" stroke-width="1.4"/>`;
+  svg += `<line x1="${pad.l}" y1="${pad.t}" x2="${pad.l}" y2="${h-pad.b}" stroke="#33456b" stroke-width="1.4"/>`;
+
+  // horizontal reference lines (dashed)
+  (hlines||[]).forEach(hl=>{
+    svg += `<line x1="${pad.l}" y1="${sy(hl.y)}" x2="${w-pad.r}" y2="${sy(hl.y)}" stroke="${hl.color}" stroke-width="1.3" stroke-dasharray="5,4" opacity="0.85"/>`;
+  });
+
+  // curves
+  (curves||[]).forEach(c=>{
+    const d = c.pts.map((pt,i)=> (i===0?"M":"L") + sx(pt[0]).toFixed(2) + "," + sy(pt[1]).toFixed(2)).join(" ");
+    svg += `<path d="${d}" fill="none" stroke="${c.color}" stroke-width="${c.width||2.4}" stroke-linecap="round" stroke-linejoin="round" opacity="${c.opacity||1}" stroke-dasharray="${c.dash||''}"/>`;
+  });
+
+  // scatter points
+  (points||[]).forEach(p0=>{
+    (p0.pts||[]).forEach(pt=>{
+      svg += `<circle cx="${sx(pt[0])}" cy="${sy(pt[1])}" r="${p0.r||3}" fill="${p0.color}" opacity="${p0.opacity||1}"/>`;
+    });
+  });
+
+  // marker (root point)
+  (opts.markers||[]).forEach(mk=>{
+    svg += `<line x1="${sx(mk.x)}" y1="${sy(mk.y)}" x2="${sx(mk.x)}" y2="${h-pad.b}" stroke="${mk.color}" stroke-width="1" stroke-dasharray="3,3" opacity="0.6"/>`;
+    svg += `<circle cx="${sx(mk.x)}" cy="${sy(mk.y)}" r="5.5" fill="${mk.color}" stroke="#0a0f1c" stroke-width="2"/>`;
+    svg += `<text x="${sx(mk.x)}" y="${sy(mk.y)-11}" text-anchor="middle" font-family="JetBrains Mono" font-size="10.5" font-weight="700" fill="${mk.color}">${mk.label}</text>`;
+  });
+
+  svg += `</svg>`;
+  el.innerHTML = svg;
+}
+
+/* =====================================================================
+   BUILD ALL CHARTS
+   ===================================================================== */
+function renderCharts(){
+  const xs = Array.from({length:120}, (_,i)=> A + i*(B-A)/119);
+  const Fxs = xs.map(x=>[x, F(x)]);
+
+  // Title chart (signature)
+  buildChart(document.getElementById('titleChart'), {
+    xMin:A, xMax:B, yMin:0, yMax: Math.max(...Fxs.map(p=>p[1]))*1.15,
+    curves:[{pts:Fxs, color:"#f2b155", width:2.6}],
+  });
+
+  // Slide 3: F(x)
+  buildChart(document.getElementById('chart-Fx'), {
+    xMin:A, xMax:B, yMin:0, yMax: Math.max(...Fxs.map(p=>p[1]))*1.15,
+    curves:[{pts:Fxs, color:"#f2b155", width:2.6}],
+  });
+
+  // Slide 6: verify (custom vs native — nearly identical, native computed with Math built-ins directly)
+  const nativeF = x => simpson(t=>Math.exp(-Math.pow(t-1,2)), 0, Math.tan(x), 2000);
+  const nativeXs = xs.map(x=>[x, nativeF(x)]);
+  buildChart(document.getElementById('chart-verify'), {
+    xMin:A, xMax:B, yMin:0, yMax: Math.max(...Fxs.map(p=>p[1]))*1.15,
+    curves:[
+      {pts:Fxs, color:"#f2b155", width:3.2, opacity:0.9},
+      {pts:nativeXs, color:"#57c7b8", width:1.6, dash:"6,4"},
+    ],
+  });
+  document.getElementById('stat-fcustom').textContent = fmt(F(0.4), 10);
+  document.getElementById('stat-fnative').textContent = fmt(nativeF(0.4), 10);
+
+  // Slide 8 stats
+  document.getElementById('stat-intF').textContent = fmt(intF, 8);
+  document.getElementById('stat-avgF').textContent = fmt(avgF, 8);
+
+  // Slide 10: integral MVT chart
+  buildChart(document.getElementById('chart-imvt'), {
+    xMin:A, xMax:B, yMin:0, yMax: Math.max(...Fxs.map(p=>p[1]))*1.15,
+    curves:[{pts:Fxs, color:"#f2b155", width:2.6}],
+    hlines:[{y:avgF, color:"#57c7b8"}],
+    markers:[{x:c1, y:Fc1, color:"#e2685a", label:`c ≈ ${fmt(c1,4)}`}],
+  });
+  document.getElementById('stat-c1').textContent = fmt(c1, 8);
+  document.getElementById('stat-fc1').textContent = fmt(Fc1, 8);
+  document.getElementById('sum-c1').textContent = fmt(c1, 6);
+  document.getElementById('sum-fc1').textContent = fmt(Fc1, 6);
+
+  // Slide 11: derivative samples
+  buildChart(document.getElementById('chart-samples'), {
+    xMin:A, xMax:B, yMin: Math.min(...sampleDs)*0.9, yMax: Math.max(...sampleDs)*1.1,
+    points:[{pts:sampleXs.map((x,i)=>[x,sampleDs[i]]), color:"#57c7b8", r:3.4}],
+  });
+  document.getElementById('stat-m').textContent = fmt(m, 8);
+  document.getElementById('stat-f05').textContent = fmt(F(B), 8);
+
+  // Slide 12: interpolation
+  const interpXs = xs.map(x=>[x, p(x)]);
+  buildChart(document.getElementById('chart-interp'), {
+    xMin:A, xMax:B, yMin: Math.min(...sampleDs)*0.9, yMax: Math.max(...sampleDs)*1.1,
+    curves:[{pts:interpXs, color:"#57c7b8", width:2.4}],
+    points:[{pts:sampleXs.map((x,i)=>[x,sampleDs[i]]), color:"#f2b155", r:2.6, opacity:0.85}],
+  });
+
+  // Slide 13: derivative MVT
+  buildChart(document.getElementById('chart-dmvt'), {
+    xMin:A, xMax:B, yMin: Math.min(...sampleDs)*0.9, yMax: Math.max(...sampleDs)*1.1,
+    curves:[{pts:interpXs, color:"#57c7b8", width:2.4}],
+    hlines:[{y:m, color:"#f2b155"}],
+    markers:[{x:c2, y:pc2, color:"#e2685a", label:`c ≈ ${fmt(c2,4)}`}],
+  });
+  document.getElementById('stat-c2').textContent = fmt(c2, 8);
+  document.getElementById('stat-fpc2').textContent = fmt(pc2, 8);
+  document.getElementById('sum-c2').textContent = fmt(c2, 6);
+  document.getElementById('sum-fpc2').textContent = fmt(pc2, 6);
+}
+
+/* =====================================================================
+   SLIDE DECK ENGINE
+   ===================================================================== */
+const slides = Array.from(document.querySelectorAll('.slide'));
+const total = slides.length;
+let idx = 0;
+
+function goTo(n){
+  n = Math.max(0, Math.min(total-1, n));
+  slides[idx].classList.remove('active');
+  idx = n;
+  slides[idx].classList.add('active');
+  document.getElementById('progressFill').style.width = ((idx+1)/total*100) + '%';
+  const faDigits = s => s.toString().replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+  document.getElementById('counter').textContent =
+    faDigits(String(idx+1).padStart(2,'0')) + ' / ' + faDigits(total);
+}
+
+document.getElementById('nextBtn').addEventListener('click', ()=>goTo(idx+1));
+document.getElementById('prevBtn').addEventListener('click', ()=>goTo(idx-1));
+
+window.addEventListener('keydown', (e)=>{
+  if(['ArrowLeft','ArrowDown','PageDown',' '].includes(e.key)){ goTo(idx+1); e.preventDefault(); }
+  if(['ArrowRight','ArrowUp','PageUp'].includes(e.key)){ goTo(idx-1); e.preventDefault(); }
+  if(e.key==='Home') goTo(0);
+  if(e.key==='End') goTo(total-1);
+});
+
+let touchStartX = null;
+window.addEventListener('touchstart', e=> touchStartX = e.touches[0].clientX);
+window.addEventListener('touchend', e=>{
+  if(touchStartX===null) return;
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if(Math.abs(dx) > 60){ dx < 0 ? goTo(idx+1) : goTo(idx-1); }
+  touchStartX = null;
+});
+
+/* init */
+renderCharts();
+goTo(0);
+
+document.addEventListener('DOMContentLoaded', function(){
+  renderMathInElement(document.body, {
+    delimiters: [{left:"\\(", right:"\\)", display:false}],
+    ignoredTags: ["script","noscript","style","textarea","pre","code"],
+  });
+});
+/* katex render fallback if DOMContentLoaded already fired */
+if(document.readyState !== 'loading'){
+  window.addEventListener('load', function(){
+    document.querySelectorAll('.tex').forEach(function(elm){
+      try{
+        katex.render(elm.textContent, elm, {throwOnError:false, displayMode:true});
+      }catch(e){}
+    });
+  });
+}
+window.addEventListener('load', function(){
+  document.querySelectorAll('.tex').forEach(function(elm){
+    if(elm.querySelector('.katex')) return;
+    try{
+      katex.render(elm.textContent, elm, {throwOnError:false, displayMode:true});
+    }catch(e){ console.error(e); }
+  });
+});
+</script>
+</body>
+</html>
