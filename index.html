@@ -194,11 +194,12 @@ h1.slide-title b, h1.slide-title .hl{
   border-radius:10px;
   padding:1.1rem 1.4rem;
   direction:ltr;
+  unicode-bidi:isolate;
   text-align:center;
   color:var(--text);
   overflow-x:auto;
 }
-.eq .katex{ font-size:1.12em; color:var(--text); }
+.eq .katex{ font-size:1.12em; color:var(--text); direction:ltr; unicode-bidi:isolate; }
 .eq-label{
   font-family:var(--font-mono);
   font-size:.7rem;
@@ -206,10 +207,12 @@ h1.slide-title b, h1.slide-title .hl{
   margin-top:.5rem;
   text-align:center;
   direction:rtl;
+  unicode-bidi:isolate;
 }
 
 /* mono / numeric emphasis */
 .mono{ font-family:var(--font-mono); direction:ltr; unicode-bidi: isolate; }
+.math{ font-family:var(--font-mono); color:var(--accent); direction:ltr; unicode-bidi:isolate; }
 .result{
   font-family:var(--font-mono);
   color:var(--accent);
@@ -225,8 +228,9 @@ h1.slide-title b, h1.slide-title .hl{
   display:flex; flex-direction:column;
   flex:1;
   min-height:0;
+  direction:ltr;
 }
-.chart-wrap svg{ width:100%; height:100%; overflow:visible;}
+.chart-wrap svg{ width:100%; height:100%; overflow:visible; direction:ltr; unicode-bidi:isolate;}
 .chart-title{
   font-family:var(--font-mono);
   font-size:.72rem;
@@ -234,6 +238,7 @@ h1.slide-title b, h1.slide-title .hl{
   letter-spacing:.03em;
   margin-bottom:.4rem;
   display:flex; justify-content:space-between; align-items:center;
+  direction:rtl;
 }
 .chart-title .live{
   color:var(--accent2);
@@ -331,6 +336,8 @@ table.data tr:last-child td{ border-bottom:none;}
   font-size:.78rem;
   color:var(--text-dimmer);
   white-space:nowrap;
+  direction:ltr;
+  unicode-bidi:isolate;
 }
 .nav-btns{ display:flex; gap:.6rem; }
 .nav-btn{
@@ -384,7 +391,9 @@ table.data tr:last-child td{ border-bottom:none;}
   width:min(560px, 70vw);
   height: 20vh;
   margin: 0 auto 3vh auto;
+  direction:ltr;
 }
+.title-chart svg{ width:100%; height:100%; direction:ltr; unicode-bidi:isolate; }
 .authors{
   display:flex; flex-wrap:wrap; justify-content:center; gap:.5rem 1rem;
   font-family:var(--font-mono);
@@ -445,7 +454,7 @@ table.data tr:last-child td{ border-bottom:none;}
     <div class="eyebrow">صورت مسئله</div>
     <h1 class="slide-title">دو قضیه‌ی مقدار میانگین، <b>به‌صورت عددی</b></h1>
     <p class="subtitle">
-      برای تابع مشخص F(x)، باید در بازه‌ی [a,b] نقطه‌ی c را — بدون هیچ محاسبه‌ی نمادین —
+      برای تابع مشخص <span dir="ltr" class="math">F(x)</span>، باید در بازه‌ی [a,b] نقطه‌ی c را — بدون هیچ محاسبه‌ی نمادین —
       صرفاً با ریشه‌یابی، درون‌یابی، مشتق‌گیری و انتگرال‌گیری عددی پیدا کنیم.
     </p>
     <div class="body-area">
@@ -465,7 +474,7 @@ table.data tr:last-child td{ border-bottom:none;}
   <!-- SLIDE 3 : OUR FUNCTION -->
   <section class="slide" data-title="تابع گروه">
     <div class="eyebrow">تابع اختصاصی گروه</div>
-    <h1 class="slide-title">F(x) به‌صورت یک <b>انتگرال با کران متغیر</b></h1>
+    <h1 class="slide-title"><span dir="ltr" class="math">F(x)</span> به‌صورت یک <b>انتگرال با کران متغیر</b></h1>
     <div class="body-area">
       <div class="col" style="flex:1.1;">
         <div class="eq">
@@ -474,14 +483,14 @@ table.data tr:last-child td{ border-bottom:none;}
         <div class="card" style="margin-top:.9rem;">
           <h3>چرا محاسبه‌ی این تابع ساده نیست؟</h3>
           <ul>
-            <li>کران بالای انتگرال خودش تابعی از x است — tan(x)</li>
+            <li>کران بالای انتگرال خودش تابعی از x است — <span dir="ltr" class="math">tan(x)</span></li>
             <li>پادمشتقی به‌صورت بسته برای e<span class="mono" style="font-size:.85em;">^(-(t-1)²)</span> وجود ندارد</li>
             <li>طبق صورت مسئله، حل نمادین (syms, int, diff) مجاز نیست</li>
           </ul>
         </div>
       </div>
       <div class="col chart-wrap" id="Fx-chart-wrap" style="flex:1;">
-        <div class="chart-title"><span>F(x) روی [۰, ۰.۵]</span>  </div>
+        <div class="chart-title"><span><span dir="ltr" class="math">F(x)</span> روی [0.5 , 0]</span>  </div>
         <div id="chart-Fx" style="flex:1;"></div>
       </div>
     </div>
@@ -493,7 +502,7 @@ table.data tr:last-child td{ border-bottom:none;}
     <h1 class="slide-title">چهار روش عددی، <b>همه در خدمت دو قضیه</b></h1>
     <p class="subtitle">هیچ‌کدام از این مراحل از دستورهای نمادین متلب استفاده نمی‌کنند؛ همه روی نمونه‌های عددی کار می‌کنند.</p>
     <div class="body-area" style="gap:1.1vw;">
-      <div class="card"><h3>۱ · انتگرال‌گیری عددی</h3><p>قاعده‌ی ۱/۳ سیمپسون برای محاسبه‌ی خودِ F(x) و میانگین آن روی [۰, ۰.۵]</p></div>
+      <div class="card"><h3>۱ · انتگرال‌گیری عددی</h3><p>قاعده‌ی ۱/۳ سیمپسون برای محاسبه‌ی خودِ <span dir="ltr" class="math">F(x)</span> و میانگین آن روی [0.5 , 0]</p></div>
       <div class="card"><h3>۲ · مشتق‌گیری عددی</h3><p>روش تفاضل مرکزی سه‌نقطه‌ای برای تخمین F′(x) در نقاط نمونه</p></div>
       <div class="card"><h3>۳ · درون‌یابی</h3><p>چندجمله‌ای لاگرانژ (و تفاضلات پیشرو نیوتن) برای پیوسته‌سازی نمونه‌های مشتق</p></div>
       <div class="card"><h3>۴ · ریشه‌یابی</h3><p>دوبخشی و نقطه‌ی ثابت برای یافتن c در هر دو قضیه</p></div>
@@ -503,12 +512,12 @@ table.data tr:last-child td{ border-bottom:none;}
   <!-- SLIDE 5 : Building F(x) -->
   <section class="slide" data-title="ساخت F(x)">
     <div class="eyebrow">پیاده‌سازی</div>
-    <h1 class="slide-title">ساخت F(x): <b>سیمپسون + سری تیلور</b></h1>
+    <h1 class="slide-title">ساخت <span dir="ltr" class="math">F(x)</span>: <b>سیمپسون + سری تیلور</b></h1>
     <div class="body-area">
       <div class="col">
         <div class="card">
           <h3>گام ۱ — انتگرال‌گیری</h3>
-          <p>مقدار F(x) با قاعده‌ی سیمپسون روی ۱۰۰۰ زیربازه بین ۰ و tan(x) محاسبه می‌شود:</p>
+          <p>مقدار <span dir="ltr" class="math">F(x)</span> با قاعده‌ی سیمپسون روی ۱۰۰۰ زیربازه بین ۰ و <span dir="ltr" class="math">tan(x)</span> محاسبه می‌شود:</p>
         </div>
         <div class="eq" style="font-size:.92rem;">
           <span class="tex">\int_a^b f(t)\,dt \approx \frac{h}{3}\Big[f_0+4\!\!\sum_{i\,odd}\!\!f_i+2\!\!\sum_{i\,even}\!\!f_i+f_n\Big]</span>
@@ -531,7 +540,7 @@ table.data tr:last-child td{ border-bottom:none;}
   <section class="slide" data-title="راستی‌آزمایی">
     <div class="eyebrow">راستی‌آزمایی</div>
     <h1 class="slide-title">مقایسه با تابع <b>داخلی متلب</b></h1>
-    <p class="subtitle">پیش از استفاده از F(x) در ادامه‌ی پروژه، خروجی آن با تابع <span class="mono">integral</span> داخلی متلب مقایسه شد.</p>
+    <p class="subtitle">پیش از استفاده از <span dir="ltr" class="math">F(x)</span> در ادامه‌ی پروژه، خروجی آن با تابع <span class="mono">integral</span> داخلی متلب مقایسه شد.</p>
     <div class="body-area">
       <div class="col chart-wrap">
         <div class="chart-title"><span>F سفارشی در برابر F داخلی</span>  </div>
@@ -539,8 +548,8 @@ table.data tr:last-child td{ border-bottom:none;}
       </div>
       <div class="col">
         <div class="stat-row">
-          <div class="stat"><div class="k">F(0.4) — سفارشی</div><div class="v" id="stat-fcustom">—</div></div>
-          <div class="stat teal"><div class="k">F(0.4) — داخلی متلب</div><div class="v" id="stat-fnative">—</div></div>
+          <div class="stat"><div class="k"><span class="mono">F(0.4)</span> — سفارشی</div><div class="v" id="stat-fcustom">—</div></div>
+          <div class="stat teal"><div class="k"><span class="mono">F(0.4)</span> — داخلی متلب</div><div class="v" id="stat-fnative">—</div></div>
         </div>
         <div class="card" style="margin-top:.4rem;">
           <h3>نتیجه</h3>
@@ -568,12 +577,12 @@ table.data tr:last-child td{ border-bottom:none;}
       <div class="col">
         <div class="card accent2">
           <h3>روش محاسبه</h3>
-          <p>مشتق مرتبه‌چهارم انتگرالده و خودِ F(x) — فقط برای تحلیل خطا و نه برای پاسخ نهایی —
-             به‌صورت نمادین محاسبه می‌شود و سپس بیشینه‌ی قدرمطلق آن روی [۰, ۰.۵] با <span class="mono">fminbnd</span> پیدا می‌شود.</p>
+          <p>مشتق مرتبه‌چهارم تابع زیر انتگرال و خودِ <span dir="ltr" class="math">F(x)</span> — فقط برای تحلیل خطا و نه برای پاسخ نهایی —
+             به‌صورت نمادین محاسبه می‌شود و سپس بیشینه‌ی قدرمطلق آن روی [0.5 , 0] با <span class="mono">fminbnd</span> پیدا می‌شود.</p>
         </div>
         <div class="steps">
-          <div class="step"><div class="num">۱</div><div class="txt">مشتق مرتبه ۴ تابع انتگرالده و F(x) به‌دست می‌آید</div></div>
-          <div class="step"><div class="num">۲</div><div class="txt">بیشینه‌ی قدرمطلق هرکدام روی [۰, ۰.۵] پیدا می‌شود</div></div>
+          <div class="step"><div class="num">۱</div><div class="txt">مشتق مرتبه ۴ تابع تابع زیر انتگرال و <span dir="ltr" class="math">F(x)</span> به‌دست می‌آید</div></div>
+          <div class="step"><div class="num">۲</div><div class="txt">بیشینه‌ی قدرمطلق هرکدام روی [0.5 , 0] پیدا می‌شود</div></div>
           <div class="step"><div class="num">۳</div><div class="txt"><b>نتیجه:</b> با ۱۰۰۰ زیربازه (یعنی h بسیار کوچک)، خطا در حد دقت ماشین باقی می‌ماند</div></div>
         </div>
       </div>
@@ -583,23 +592,27 @@ table.data tr:last-child td{ border-bottom:none;}
   <!-- SLIDE 8 : Integral MVT goal -->
   <section class="slide" data-title="هدف MVT انتگرالی">
     <div class="eyebrow">قضیه مقدار میانگین انتگرالی</div>
-    <h1 class="slide-title">گام اول: <b>مقدار میانگین F</b> روی [۰, ۰.۵]</h1>
+    <h1 class="slide-title">گام اول: <b>مقدار میانگین F</b> روی [0.5 , 0]</h1>
     <div class="body-area">
       <div class="col">
         <div class="eq"><span class="tex">\bar F=\frac{1}{0.5-0}\int_{0}^{0.5}F(t)\,dt</span></div>
         <div class="card" style="margin-top:.9rem;">
           <h3>روش</h3>
-          <p>انتگرال ∫F(t)dt روی [۰, ۰.۵] دوباره با قاعده‌ی سیمپسون (۱۰۰۰ زیربازه) محاسبه و بر طول بازه تقسیم می‌شود.</p>
+          <p>
+          انتگرال
+          <span dir="ltr" class="math">∫ F(t) dt</span>
+          روی [0.5 , 0] دوباره با قاعده‌ی سیمپسون (۱۰۰۰ زیربازه) محاسبه و بر طول بازه تقسیم می‌شود.
+        </p>
         </div>
       </div>
       <div class="col">
         <div class="stat-row">
-          <div class="stat"><div class="k">∫₀^0.5 F(t)dt</div><div class="v" id="stat-intF">—</div></div>
+          <div class="stat"><div class="k"><span dir="ltr" class="math">∫₀^0.5 F(t) dt</span></div><div class="v" id="stat-intF">—</div></div>
           <div class="stat teal"><div class="k">میانگین F̄</div><div class="v" id="stat-avgF">—</div></div>
         </div>
         <div class="card accent2" style="margin-top:.9rem;">
           <h3>گام بعد</h3>
-          <p>تعریف تابع کمکی <span class="mono">G(x) = F(x) − F̄</span> و یافتن ریشه‌ی آن روی [۰, ۰.۵] — همان نقطه‌ی c قضیه است.</p>
+          <p>تعریف تابع کمکی <span class="mono">G(x) = F(x) − F̄</span> و یافتن ریشه‌ی آن روی [0.5 , 0] — همان نقطه‌ی c قضیه است.</p>
         </div>
       </div>
     </div>
@@ -608,11 +621,11 @@ table.data tr:last-child td{ border-bottom:none;}
   <!-- SLIDE 9 : Integral MVT algorithm -->
   <section class="slide" data-title="الگوریتم ریشه‌یابی MVT انتگرالی">
     <div class="eyebrow">قضیه مقدار میانگین انتگرالی</div>
-    <h1 class="slide-title">ریشه‌یابی دومرحله‌ای برای <b>G(x) = 0</b></h1>
+    <h1 class="slide-title">ریشه‌یابی دومرحله‌ای برای <b><span dir="ltr" class="math">G(x) = 0</span></b></h1>
     <div class="body-area">
       <div class="col">
         <div class="steps">
-          <div class="step"><div class="num">۱</div><div class="txt"><b>دوبخشی نمادین:</b> با اعداد گویای دقیق (sym)، بازه‌ی [۰, ۰.۵] در ۵ گام حول ریشه باریک می‌شود</div></div>
+          <div class="step"><div class="num">۱</div><div class="txt"><b>دوبخشی نمادین:</b> با اعداد گویای دقیق <span class="mono">(sym)</span>، بازه‌ی [0.5 , 0] در ۵ گام حول ریشه باریک می‌شود</div></div>
           <div class="step"><div class="num">۲</div><div class="txt"><b>تخمین F′(c):</b> با تفاضل مرکزی سه‌نقطه‌ای در نقطه‌ی به‌دست‌آمده</div></div>
           <div class="step"><div class="num">۳</div><div class="txt"><b>نقطه‌ی ثابت:</b> با <span class="mono">g(x) = x − G(x)/F′(c)</span> در ۶ گام به دقت کامل می‌رسیم</div></div>
         </div>
@@ -633,7 +646,7 @@ table.data tr:last-child td{ border-bottom:none;}
     <h1 class="slide-title">نقطه‌ی <b>c</b> برای قضیه‌ی انتگرالی</h1>
     <div class="body-area">
       <div class="col chart-wrap" style="flex:1.3;">
-        <div class="chart-title"><span>F(x)، میانگین، و نقطه‌ی (c, F(c))</span>  </div>
+        <div class="chart-title"><span><span dir="ltr" class="math">F(x)</span>، میانگین، و نقطه‌ی <span dir="ltr" class="math">(c, F(c))</span></span>  </div>
         <div id="chart-imvt" style="flex:1;"></div>
       </div>
       <div class="col">
@@ -642,7 +655,7 @@ table.data tr:last-child td{ border-bottom:none;}
           <div class="stat teal"><div class="k">F(c)</div><div class="v" id="stat-fc1">—</div></div>
         </div>
         <div class="card" style="margin-top:.4rem;">
-          <p>نقطه‌ی c تقریباً وسط بازه است؛ چون F(x) روی [۰, ۰.۵] تقریباً یکنواخت افزایشی است و انحنای تندی ندارد.</p>
+          <p>نقطه‌ی c تقریباً وسط بازه است؛ چون <span dir="ltr" class="math">F(x)</span> روی [0.5 , 0] تقریباً یکنواخت افزایشی است و انحنای تندی ندارد.</p>
         </div>
       </div>
     </div>
@@ -657,11 +670,11 @@ table.data tr:last-child td{ border-bottom:none;}
         <div class="eq"><span class="tex">F'(x_i)\approx\frac{F(x_i+h)-F(x_i-h)}{2h}</span></div>
         <div class="card" style="margin-top:.9rem;">
           <h3>روش تفاضل مرکزی سه‌نقطه‌ای</h3>
-          <p>در ۲۰ نقطه‌ی هم‌فاصله روی [۰, ۰.۵]، مشتق F به‌صورت عددی تخمین زده می‌شود — بدون فراخوانی <span class="mono">diff</span> نمادین.</p>
+          <p>در ۲۰ نقطه‌ی هم‌فاصله روی [0.5 , 0]، مشتق F به‌صورت عددی تخمین زده می‌شود — بدون فراخوانی <span class="mono">diff</span> نمادین.</p>
         </div>
         <div class="stat-row" style="margin-top:.9rem;">
           <div class="stat"><div class="k">شیب وتر m</div><div class="v" id="stat-m">—</div></div>
-          <div class="stat teal"><div class="k">F(0.5)</div><div class="v" id="stat-f05">—</div></div>
+          <div class="stat teal"><div class="k"><span class="mono">F(0.5)</span></div><div class="v" id="stat-f05">—</div></div>
         </div>
       </div>
       <div class="col chart-wrap">
@@ -681,11 +694,11 @@ table.data tr:last-child td{ border-bottom:none;}
         <div class="eq"><span class="tex">p(x)=\sum_{i=1}^{n} F'(x_i)\prod_{j\ne i}\frac{x-x_j}{x_i-x_j}</span></div>
         <div class="card accent2" style="margin-top:.9rem;">
           <h3>سپس یک ریشه‌یابی دیگر</h3>
-          <p>تعریف <span class="mono">H(x) = p(x) − m</span> و یافتن ریشه‌ی آن روی (۰, ۰.۵) با روش دوبخشی (تُلرانس ۱۰⁻⁸) — همان نقطه‌ی c قضیه‌ی مشتق است.</p>
+          <p>تعریف <span class="mono">H(x) = p(x) − m</span> و یافتن ریشه‌ی آن روی (0.5 , 0) با روش دوبخشی (تُلرانس <span dir="ltr" class="math">10⁻⁸</span>) — همان نقطه‌ی c قضیه‌ی مشتق است.</p>
         </div>
       </div>
       <div class="col chart-wrap">
-        <div class="chart-title"><span>چندجمله‌ای درون‌یاب p(x)</span>  </div>
+        <div class="chart-title"><span>چندجمله‌ای درون‌یاب <span dir="ltr" class="math">p(x)</span></span>  </div>
         <div id="chart-interp" style="flex:1;"></div>
       </div>
     </div>
@@ -697,7 +710,7 @@ table.data tr:last-child td{ border-bottom:none;}
     <h1 class="slide-title">نقطه‌ی <b>c</b> برای قضیه‌ی مشتق</h1>
     <div class="body-area">
       <div class="col chart-wrap" style="flex:1.3;">
-        <div class="chart-title"><span>p(x)، شیب وتر m، و نقطه‌ی (c, p(c))</span>  </div>
+        <div class="chart-title"><span><span dir="ltr" class="math">p(x)</span>، شیب وتر m، و نقطه‌ی <span dir="ltr" class="math">(c, p(c))</span></span>  </div>
         <div id="chart-dmvt" style="flex:1;"></div>
       </div>
       <div class="col">
@@ -706,7 +719,7 @@ table.data tr:last-child td{ border-bottom:none;}
           <div class="stat teal"><div class="k">F′(c)</div><div class="v" id="stat-fpc2">—</div></div>
         </div>
         <div class="card" style="margin-top:.4rem;">
-          <p>در این نقطه، شیب مماس بر F(x) دقیقاً برابر شیب وتر بین دو سر بازه است — دقیقاً همان چیزی که قضیه ادعا می‌کند.</p>
+          <p>در این نقطه، شیب مماس بر <span dir="ltr" class="math">F(x)</span> دقیقاً برابر شیب وتر بین دو سر بازه است — دقیقاً همان چیزی که قضیه ادعا می‌کند.</p>
         </div>
       </div>
     </div>
@@ -876,7 +889,9 @@ function buildChart(el, opts){
   const sx = x => pad.l + (x-xMin)/(xMax-xMin) * (w-pad.l-pad.r);
   const sy = y => (h-pad.b) - (y-yMin)/(yMax-yMin) * (h-pad.t-pad.b);
 
-  let svg = `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">`;
+  // direction="ltr" pins axis/text-anchor semantics to LTR regardless of the
+  // page's dir="rtl" ancestor, so numeric tick labels don't mirror.
+  let svg = `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" direction="ltr" style="direction:ltr;unicode-bidi:isolate;">`;
 
   // grid
   const gridColor = "#1e2c48";
@@ -884,12 +899,12 @@ function buildChart(el, opts){
   for(let i=0;i<=nY;i++){
     const y = yMin + i*(yMax-yMin)/nY;
     svg += `<line x1="${pad.l}" y1="${sy(y)}" x2="${w-pad.r}" y2="${sy(y)}" stroke="${gridColor}" stroke-width="1"/>`;
-    svg += `<text x="${pad.l-8}" y="${sy(y)+3}" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="#5f709a">${fmt(y,2)}</text>`;
+    svg += `<text x="${pad.l-8}" y="${sy(y)+3}" text-anchor="end" font-family="JetBrains Mono" font-size="9" fill="#5f709a" direction="ltr">${fmt(y,2)}</text>`;
   }
   for(let i=0;i<=nX;i++){
     const x = xMin + i*(xMax-xMin)/nX;
     svg += `<line x1="${sx(x)}" y1="${pad.t}" x2="${sx(x)}" y2="${h-pad.b}" stroke="${gridColor}" stroke-width="1"/>`;
-    svg += `<text x="${sx(x)}" y="${h-pad.b+16}" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#5f709a">${fmt(x,2)}</text>`;
+    svg += `<text x="${sx(x)}" y="${h-pad.b+16}" text-anchor="middle" font-family="JetBrains Mono" font-size="9" fill="#5f709a" direction="ltr">${fmt(x,2)}</text>`;
   }
   // axes
   svg += `<line x1="${pad.l}" y1="${h-pad.b}" x2="${w-pad.r}" y2="${h-pad.b}" stroke="#33456b" stroke-width="1.4"/>`;
@@ -917,7 +932,7 @@ function buildChart(el, opts){
   (opts.markers||[]).forEach(mk=>{
     svg += `<line x1="${sx(mk.x)}" y1="${sy(mk.y)}" x2="${sx(mk.x)}" y2="${h-pad.b}" stroke="${mk.color}" stroke-width="1" stroke-dasharray="3,3" opacity="0.6"/>`;
     svg += `<circle cx="${sx(mk.x)}" cy="${sy(mk.y)}" r="5.5" fill="${mk.color}" stroke="#0a0f1c" stroke-width="2"/>`;
-    svg += `<text x="${sx(mk.x)}" y="${sy(mk.y)-11}" text-anchor="middle" font-family="JetBrains Mono" font-size="10.5" font-weight="700" fill="${mk.color}">${mk.label}</text>`;
+    svg += `<text x="${sx(mk.x)}" y="${sy(mk.y)-11}" text-anchor="middle" font-family="JetBrains Mono" font-size="10.5" font-weight="700" fill="${mk.color}" direction="ltr">${mk.label}</text>`;
   });
 
   svg += `</svg>`;
