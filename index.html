@@ -433,8 +433,8 @@ table.data tr:last-child td{ border-bottom:none;}
     <div class="kicker">پروژه پایانی درس آنالیز عددی · ۲۰۲۶</div>
     <h1>تأیید عددی <span class="hl">قضایای مقدار میانگین</span></h1>
     <p class="desc">
-      محاسبه‌ی عددی نقطه‌ی تضمین‌شده توسط قضیه‌ی مقدار میانگین انتگرالی و مشتق‌گیری،
-      برای تابعی که با انتگرال‌گیری عددی تعریف شده — بدون استفاده از مشتق‌گیری یا انتگرال‌گیری نمادین.
+      محاسبه‌ی عددی نقطه‌ای که قضیه‌ی مقدار میانگین انتگرالی و قضیه‌ی مقدار میانگین مشتق تضمین می‌کنند،
+      برای تابعی که با انتگرال‌گیری عددی تعریف شده است — بدون استفاده از مشتق‌گیری یا انتگرال‌گیری نمادین.
     </p>
     <div class="title-chart" id="titleChart"></div>
     <div class="authors">
@@ -449,8 +449,8 @@ table.data tr:last-child td{ border-bottom:none;}
     <div class="eyebrow">صورت مسئله</div>
     <h1 class="slide-title">دو قضیه‌ی مقدار میانگین، <b>به‌صورت عددی</b></h1>
     <p class="subtitle">
-      برای تابع F(x) با ضابطه‌ی مشخص‌شده در هر بازه‌ی [a,b]، باید نقطه‌ی c را — بدون هیچ محاسبه‌ی نمادین —
-      صرفاً با ریشه‌یابی، درون‌یابی، مشتق‌گیری و انتگرال‌گیری عددی به دست آوریم.
+      برای تابع مشخص F(x)، باید در بازه‌ی [a,b] نقطه‌ی c را — بدون هیچ محاسبه‌ی نمادین —
+      صرفاً با ریشه‌یابی، درون‌یابی، مشتق‌گیری و انتگرال‌گیری عددی پیدا کنیم.
     </p>
     <div class="body-area">
       <div class="col">
@@ -479,7 +479,7 @@ table.data tr:last-child td{ border-bottom:none;}
           <h3>چرا محاسبه‌ی این تابع ساده نیست؟</h3>
           <ul>
             <li>کران بالای انتگرال خودش تابعی از x است — tan(x)</li>
-            <li>پادمشتق بسته‌فرم برای e<span class="mono" style="font-size:.85em;">^(-(t-1)²)</span> وجود ندارد</li>
+            <li>پادمشتقی به‌صورت بسته برای e<span class="mono" style="font-size:.85em;">^(-(t-1)²)</span> وجود ندارد</li>
             <li>طبق صورت مسئله، حل نمادین (syms, int, diff) مجاز نیست</li>
           </ul>
         </div>
@@ -494,7 +494,7 @@ table.data tr:last-child td{ border-bottom:none;}
   <!-- SLIDE 4 : METHOD INVENTORY -->
   <section class="slide" data-title="روش‌های عددی">
     <div class="eyebrow">جعبه‌ابزار</div>
-    <h1 class="slide-title">چهار روش عددی، <b>یک‌جا در خدمت دو قضیه</b></h1>
+    <h1 class="slide-title">چهار روش عددی، <b>همه در خدمت دو قضیه</b></h1>
     <p class="subtitle">هیچ‌کدام از این مراحل از دستورهای نمادین متلب استفاده نمی‌کنند؛ همه روی نمونه‌های عددی کار می‌کنند.</p>
     <div class="body-area" style="gap:1.1vw;">
       <div class="card"><h3>۱ · انتگرال‌گیری عددی</h3><p>قاعده‌ی ۱/۳ سیمپسون برای محاسبه‌ی خودِ F(x) و میانگین آن روی [۰, ۰.۵]</p></div>
@@ -563,7 +563,7 @@ table.data tr:last-child td{ border-bottom:none;}
       <div class="col">
         <div class="card">
           <h3>کران خطای قاعده‌ی سیمپسون</h3>
-          <p>خطای انتگرال‌گیری سیمپسون با مشتق مرتبه‌چهارم تابع کران‌دار می‌شود:</p>
+          <p>خطای انتگرال‌گیری سیمپسون توسط مشتق مرتبه‌چهارم تابع کران‌دار می‌شود:</p>
         </div>
         <div class="eq">
           <span class="tex">\left|E\right| \le \frac{(b-a)}{180}\,h^{4}\max_{[a,b]}\left|f^{(4)}(\xi)\right|</span>
@@ -572,13 +572,13 @@ table.data tr:last-child td{ border-bottom:none;}
       <div class="col">
         <div class="card accent2">
           <h3>روش محاسبه</h3>
-          <p>مشتق مرتبه‌چهارم انتگرالده و خودِ F(x) به‌صورت نمادین (فقط برای تحلیل خطا، نه برای پاسخ نهایی)
-             محاسبه و سپس بیشینه‌ی قدرمطلق آن روی [۰, ۰.۵] با <span class="mono">fminbnd</span> یافت می‌شود.</p>
+          <p>مشتق مرتبه‌چهارم انتگرالده و خودِ F(x) — فقط برای تحلیل خطا و نه برای پاسخ نهایی —
+             به‌صورت نمادین محاسبه می‌شود و سپس بیشینه‌ی قدرمطلق آن روی [۰, ۰.۵] با <span class="mono">fminbnd</span> پیدا می‌شود.</p>
         </div>
         <div class="steps">
           <div class="step"><div class="num">۱</div><div class="txt">مشتق مرتبه ۴ تابع انتگرالده و F(x) به‌دست می‌آید</div></div>
           <div class="step"><div class="num">۲</div><div class="txt">بیشینه‌ی قدرمطلق هرکدام روی [۰, ۰.۵] پیدا می‌شود</div></div>
-          <div class="step"><div class="num">۳</div><div class="txt"><b>نتیجه:</b> با h کوچکِ ۱۰۰۰ زیربازه، خطا در حد ماشین باقی می‌ماند</div></div>
+          <div class="step"><div class="num">۳</div><div class="txt"><b>نتیجه:</b> با ۱۰۰۰ زیربازه (یعنی h بسیار کوچک)، خطا در حد دقت ماشین باقی می‌ماند</div></div>
         </div>
       </div>
     </div>
@@ -646,7 +646,7 @@ table.data tr:last-child td{ border-bottom:none;}
           <div class="stat teal"><div class="k">F(c)</div><div class="v" id="stat-fc1">—</div></div>
         </div>
         <div class="card" style="margin-top:.4rem;">
-          <p>نقطه‌ی c تقریباً وسط بازه است؛ چون F(x) روی [۰, ۰.۵] تقریباً یکنواخت افزایشی و بدون تغییر انحنای شدید است.</p>
+          <p>نقطه‌ی c تقریباً وسط بازه است؛ چون F(x) روی [۰, ۰.۵] تقریباً یکنواخت افزایشی است و انحنای تندی ندارد.</p>
         </div>
       </div>
     </div>
