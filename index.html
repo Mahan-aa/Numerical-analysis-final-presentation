@@ -961,7 +961,7 @@ function renderCharts(){
   });
 
   // Slide 6: verify (custom vs native — nearly identical, native computed with Math built-ins directly)
-  const nativeF = x => simpson(t=>Math.exp(-Math.pow(t-1,2)), 0, Math.tan(x), 2000);
+  const nativeF = x => 1+simpson(t=>Math.exp(-Math.pow(t-1,2)), 0, Math.tan(x), 2000);
   const nativeXs = xs.map(x=>[x, nativeF(x)]);
   buildChart(document.getElementById('chart-verify'), {
     xMin:A, xMax:B, yMin:0, yMax: Math.max(...Fxs.map(p=>p[1]))*1.15,
