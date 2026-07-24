@@ -126,6 +126,7 @@ h1.slide-title b, h1.slide-title .hl{
   min-height:0;
   display:flex;
   gap: 2.6vw;
+  /* max-height: 150px; */
 }
 
 .col{ flex:1; min-width:0; display:flex; flex-direction:column; gap:1.1vh; justify-content:center;}
@@ -514,23 +515,24 @@ table.data tr:last-child td{ border-bottom:none;}
     <div class="eyebrow">پیاده‌سازی</div>
     <h1 class="slide-title">ساخت <span dir="ltr" class="math">F(x)</span>: <b>سیمپسون + سری تیلور</b></h1>
     <div class="body-area">
-      <div class="col">
-        <div class="card">
-          <h3>گام ۱ — انتگرال‌گیری</h3>
-          <p>مقدار <span dir="ltr" class="math">F(x)</span> با قاعده‌ی سیمپسون روی ۱۰۰۰ زیربازه بین ۰ و <span dir="ltr" class="math">tan(x)</span> محاسبه می‌شود:</p>
-        </div>
-        <div class="eq" style="font-size:.92rem;">
-          <span class="tex">\int_a^b f(t)\,dt \approx \frac{h}{3}\Big[f_0+4\!\!\sum_{i\,odd}\!\!f_i+2\!\!\sum_{i\,even}\!\!f_i+f_n\Big]</span>
-        </div>
-      </div>
+
       <div class="col">
         <div class="card accent2">
-          <h3>گام ۲ — بدون توابع آماده</h3>
+          <h3>گام ۱ — بدون توابع آماده</h3>
           <p>چون در بازه‌ی کاری، x به صفر نزدیک است، مقادیر <span class="mono">tan(x)</span> و <span class="mono">exp(x)</span>
              به‌جای فراخوانی توابع داخلی، با بسط سری تیلور (۵۰ جمله) محاسبه می‌شوند — سازگار با محدودیت «فقط روش‌های عددی».</p>
         </div>
         <div class="eq" style="font-size:.92rem;">
           <span class="tex">e^{x}\approx\sum_{n=0}^{50}\frac{x^{n}}{n!}\,,\qquad \tan(x)=\frac{\sin(x)}{\cos(x)}</span>
+        </div>
+      </div>
+            <div class="col">
+        <div class="card">
+          <h3>گام ۲ — انتگرال‌گیری</h3>
+          <p>مقدار <span dir="ltr" class="math">F(x)</span> با قاعده‌ی سیمپسون روی ۱۰۰۰ زیربازه بین ۰ و <span dir="ltr" class="math">tan(x)</span> محاسبه می‌شود:</p>
+        </div>
+        <div class="eq" style="font-size:.92rem;">
+          <span class="tex">\int_a^b f(t)\,dt \approx \frac{h}{3}\Big[f_0+4\!\!\sum_{i\,odd}\!\!f_i+2\!\!\sum_{i\,even}\!\!f_i+f_n\Big]</span>
         </div>
       </div>
     </div>
@@ -816,7 +818,7 @@ function simpson(f, a, b, n){
 }
 
 function F(x){
-  return simpson(t => Math.exp(-Math.pow(t-1,2)), 0, Math.tan(x), 400);
+  return 1+simpson(t => Math.exp(-Math.pow(t-1,2)), 0, Math.tan(x), 400);
 }
 
 function Fprime(x, h=1e-5){
